@@ -10,8 +10,6 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   final GlobalKey<NavigatorState> _navigatorKey;
 
-  bool? isUnknown;
-
   MyRouterDelegate() : _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -75,9 +73,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
 
   @override
   PageConfiguration? get currentConfiguration {
-    if (isUnknown == true) {
-      return PageConfiguration.unknown();
-    } else if (detailId == null) {
+    if (detailId == null) {
       return PageConfiguration.home();
     } else if (nameReview != null && review != null) {
       return PageConfiguration.review(nameReview!, review!);
@@ -90,23 +86,15 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
 
   @override
   Future<void> setNewRoutePath(PageConfiguration configuration) async {
-    if (configuration.isUnknownPage) {
-      isUnknown = true;
-      detailId = null;
-      nameReview = null;
-      review = null;
-    } else if (configuration.isHomePage) {
-      isUnknown = false;
+    if (configuration.isHomePage) {
       detailId = null;
       nameReview = null;
       review = null;
     } else if (configuration.isDetailPage) {
-      isUnknown = false;
       detailId = configuration.detailId;
       nameReview = null;
       review = null;
     } else if (configuration.isReviewPage) {
-      isUnknown = false;
       detailId = configuration.detailId;
       nameReview = configuration.nameReview;
       review = configuration.review;

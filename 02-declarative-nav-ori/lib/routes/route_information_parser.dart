@@ -18,7 +18,7 @@ class MyRouteInformationParser
       if (first == 'home' || first == 'restaurant') {
         return PageConfiguration.home();
       } else {
-        return PageConfiguration.unknown();
+        return PageConfiguration.home();
       }
     } else if (uri.pathSegments.length == 2) {
       // path parameter => "/aaa/bbb"
@@ -28,29 +28,26 @@ class MyRouteInformationParser
       if (first == 'restaurant' && second == 'review' && query.isNotEmpty) {
         return PageConfiguration.review(query["name"]!, query["review"]!);
       } else {
-        return PageConfiguration.unknown();
+        return PageConfiguration.home();
       }
     } else if (uri.pathSegments.length == 3) {
-      // path parameter => "/aaa/bbb"
+      // path parameter => "/aaa/bbb/ccc"
       final first = uri.pathSegments[0].toLowerCase();
       final second = uri.pathSegments[1].toLowerCase();
       final third = uri.pathSegments[2].toLowerCase();
-      final detailId = int.tryParse(third) ?? 0;
-      if (first == 'restaurant' && second == 'detail' && detailId != 0) {
-        return PageConfiguration.detail(second);
+      if (first == 'restaurant' && second == 'detail' && third.isNotEmpty) {
+        return PageConfiguration.detail(third);
       } else {
-        return PageConfiguration.unknown();
+        return PageConfiguration.home();
       }
     } else {
-      return PageConfiguration.unknown();
+      return PageConfiguration.home();
     }
   }
 
   @override
   RouteInformation? restoreRouteInformation(PageConfiguration configuration) {
-    if (configuration.isUnknownPage) {
-      return const RouteInformation(location: '/unknown');
-    } else if (configuration.isHomePage) {
+    if (configuration.isHomePage) {
       return const RouteInformation(location: '/restaurant');
     } else if (configuration.isReviewPage) {
       return RouteInformation(

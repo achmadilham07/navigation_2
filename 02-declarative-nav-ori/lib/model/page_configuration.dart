@@ -1,30 +1,26 @@
-class PageConfiguration {
-  final String? detailId;
-  final String? nameReview;
-  final String? review;
+import 'package:equatable/equatable.dart';
 
-  PageConfiguration.home()
-      : detailId = null,
-        nameReview = null,
-        review = null;
+sealed class PageConfiguration extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
-  PageConfiguration.detail(String id)
-      : detailId = id,
-        nameReview = null,
-        review = null;
+final class HomePageConfiguration extends PageConfiguration {}
 
-  PageConfiguration.review(String name, String this.review)
-      : detailId = null,
-        nameReview = name;
+final class DetailPageConfiguration extends PageConfiguration {
+  final String id;
 
-  bool get isHomePage =>
-      detailId == null && nameReview == null && review == null;
-  bool get isDetailPage =>
-      detailId != null && nameReview == null && review == null;
-  bool get isReviewPage => nameReview != null && review != null;
+  DetailPageConfiguration(this.id);
 
   @override
-  String toString() {
-    return "PageConfiguration($detailId, $nameReview, $review)";
-  }
+  List<Object?> get props => [id];
+}
+
+final class ReviewPageConfiguration extends PageConfiguration {
+  final String name;
+  final String review;
+
+  ReviewPageConfiguration(this.name, this.review);
+  @override
+  List<Object?> get props => [name, review];
 }

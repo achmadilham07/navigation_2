@@ -108,7 +108,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   review: review,
                                   onTap: () {
                                     final goRouter = context.read<MyGoRouter>();
-                                    goRouter.router.push(
+                                    goRouter.router.go(
                                         "/restaurant/review?name=${review.name}&review=${review.review}");
                                   },
                                 );

@@ -74,11 +74,11 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
   @override
   PageConfiguration? get currentConfiguration {
     if (detailId == null) {
-      return PageConfiguration.home();
+      return HomePageConfiguration();
     } else if (nameReview != null && review != null) {
-      return PageConfiguration.review(nameReview!, review!);
+      return ReviewPageConfiguration(nameReview!, review!);
     } else if (detailId != null) {
-      return PageConfiguration.detail(detailId!);
+      return DetailPageConfiguration(detailId!);
     } else {
       return null;
     }
@@ -86,20 +86,20 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
 
   @override
   Future<void> setNewRoutePath(PageConfiguration configuration) async {
-    if (configuration.isHomePage) {
-      detailId = null;
-      nameReview = null;
-      review = null;
-    } else if (configuration.isDetailPage) {
-      detailId = configuration.detailId;
-      nameReview = null;
-      review = null;
-    } else if (configuration.isReviewPage) {
-      detailId = configuration.detailId;
-      nameReview = configuration.nameReview;
-      review = configuration.review;
-    } else {
-      log(' Could not set new route');
+    switch (configuration) {
+      case HomePageConfiguration():
+        detailId = null;
+        nameReview = null;
+        review = null;
+      case DetailPageConfiguration():
+        detailId = configuration.id;
+        nameReview = null;
+        review = null;
+      case ReviewPageConfiguration():
+        nameReview = configuration.name;
+        review = configuration.review;
+      default:
+        log(' Could not set new route');
     }
 
     notifyListeners();

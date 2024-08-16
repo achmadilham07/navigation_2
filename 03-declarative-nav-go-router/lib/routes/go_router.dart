@@ -15,14 +15,14 @@ class MyGoRouter {
           GoRoute(
             path: 'detail/:id',
             builder: (context, state) {
-              final id = state.params["id"]!;
+              final id = state.pathParameters["id"]!;
               return DetailScreen(detailId: id);
             },
           ),
           GoRoute(
             path: 'review',
             builder: (context, state) {
-              final query = state.queryParams;
+              final query = state.uri.queryParameters;
               final name = query["name"]!;
               final review = query["review"]!;
               return ReviewScreen(name: name, review: review);

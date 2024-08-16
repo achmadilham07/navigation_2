@@ -7,18 +7,18 @@ class MyRouteInformationParser
   @override
   Future<PageConfiguration> parseRouteInformation(
       RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location.toString());
+    final uri = routeInformation.uri;
 
     if (uri.pathSegments.isEmpty) {
       // without path parameter => "/"
-      return PageConfiguration.home();
+      return HomePageConfiguration();
     } else if (uri.pathSegments.length == 1) {
       // path parameter => "/aaa"
       final first = uri.pathSegments[0].toLowerCase();
       if (first == 'home' || first == 'restaurant') {
-        return PageConfiguration.home();
+        return HomePageConfiguration();
       } else {
-        return PageConfiguration.home();
+        return HomePageConfiguration();
       }
     } else if (uri.pathSegments.length == 2) {
       // path parameter => "/aaa/bbb"
@@ -26,9 +26,9 @@ class MyRouteInformationParser
       final second = uri.pathSegments[1].toLowerCase();
       final query = uri.queryParameters;
       if (first == 'restaurant' && second == 'review' && query.isNotEmpty) {
-        return PageConfiguration.review(query["name"]!, query["review"]!);
+        return ReviewPageConfiguration(query["name"]!, query["review"]!);
       } else {
-        return PageConfiguration.home();
+        return HomePageConfiguration();
       }
     } else if (uri.pathSegments.length == 3) {
       // path parameter => "/aaa/bbb/ccc"
@@ -36,28 +36,28 @@ class MyRouteInformationParser
       final second = uri.pathSegments[1].toLowerCase();
       final third = uri.pathSegments[2].toLowerCase();
       if (first == 'restaurant' && second == 'detail' && third.isNotEmpty) {
-        return PageConfiguration.detail(third);
+        return DetailPageConfiguration(third);
       } else {
-        return PageConfiguration.home();
+        return HomePageConfiguration();
       }
     } else {
-      return PageConfiguration.home();
+      return HomePageConfiguration();
     }
   }
 
   @override
   RouteInformation? restoreRouteInformation(PageConfiguration configuration) {
-    if (configuration.isHomePage) {
-      return const RouteInformation(location: '/restaurant');
-    } else if (configuration.isReviewPage) {
-      return RouteInformation(
-          location:
-              '/restaurant/review?name=${configuration.nameReview}&review=${configuration.review}');
-    } else if (configuration.isDetailPage) {
-      return RouteInformation(
-          location: '/restaurant/detail/${configuration.detailId}');
-    } else {
-      return null;
-    }
+    return switch (configuration) {
+      HomePageConfiguration() => RouteInformation(
+          uri: Uri.parse('/restaurant'),
+        ),
+      ReviewPageConfiguration() => RouteInformation(
+          uri: Uri.parse(
+              '/restaurant/review?name=${configuration.name}&review=${configuration.review}'),
+        ),
+      DetailPageConfiguration() => RouteInformation(
+          uri: Uri.parse('/restaurant/detail/${configuration.id}'),
+        ),
+    };
   }
 }
